@@ -10,17 +10,25 @@
 <body>
 
   <div class="videoWrapper">
-    <video autoplay poster="noWebcamFeed.png"> <!--This poster will be made to indicate no webcam feed-->
+    <video autoplay id="webcamFeed"> <!--This poster will be made to indicate no webcam feed-->
 
        </video>
   </div>
 
   <script>
-    var vidWrapper = document.getElementsByClassName("videoWrapper");
-    var vidSrc = document.getElementsByTagName("video");
+    var video = document.querySelector("#webcamFeed");
 
-
-    /*Rest of JavaScript here*/
+    if (navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({
+          video: true
+        })
+        .then(function(stream) {
+          video.srcObject = stream;
+        })
+        .catch(function(err0r) {
+          console.log("Please make sure a webcam is connected. If there is one connected, make sure it's the right one.");
+        });
+    }
   </script>
 
 </body>

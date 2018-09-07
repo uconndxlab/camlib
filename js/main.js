@@ -2,9 +2,7 @@ window.onload = function() {
   var video = document.getElementById('webcamFeed');
   var canvas = document.getElementById('canvas');
   var context = canvas.getContext('2d');
-  var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
   var findStatus = document.getElementById("indicator");
-  var r, g, b, a;
   var tracker = new tracking.ObjectTracker('face');
   tracker.setInitialScale(4);
   tracker.setStepSize(2);

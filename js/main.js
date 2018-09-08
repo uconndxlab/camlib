@@ -6,7 +6,7 @@ window.onload = function() {
   var tracker = new tracking.ObjectTracker('face');
   var foundFace = false;
   tracker.setInitialScale(4);
-  tracker.setStepSize(2);
+  tracker.setStepSize(1);
   tracker.setEdgesDensity(0.1);
 
   tracking.track('#webcamFeed', tracker, { camera: true });
@@ -15,12 +15,28 @@ window.onload = function() {
      if(foundFace && findStatus.children.length == 0){
        var faceFind = document.createElement("p");
        faceFind.setAttribute("id", "statusIndicator");
-       var text = document.createTextNode("*** FACE FOUND ***");
+       faceFind.setAttribute("style", "color: rgb(89, 255, 0); font-weight: 500;");
+       var text = document.createTextNode("--> FACE FOUND <--");
+       faceFind.appendChild(text);
+       document.getElementById("indicator").appendChild(faceFind);
+     } else if (foundFace && findStatus.children.length > 0){
+       var childP = document.getElementById("statusIndicatorRed");
+       findStatus.removeChild(childP);
+       var faceFind = document.createElement("p");
+       faceFind.setAttribute("id", "statusIndicator");
+       faceFind.setAttribute("style", "color: rgb(89, 255, 0); font-weight: 800; font-family: Helvetica; font-size: 20px;");
+       var text = document.createTextNode("--> FACE FOUND <--");
        faceFind.appendChild(text);
        document.getElementById("indicator").appendChild(faceFind);
      } else {
        var childP = document.getElementById("statusIndicator");
        findStatus.removeChild(childP);
+       var faceFind = document.createElement("p");
+       faceFind.setAttribute("id", "statusIndicatorRed");
+       faceFind.setAttribute("style", "color: rgb(212, 1, 127); font-weight: 800; font-family: Helvetica; font-size: 20px;");
+       var text = document.createTextNode("--> FACE LOST <--");
+       faceFind.appendChild(text);
+       document.getElementById("indicator").appendChild(faceFind);
      }
   }, 100);
 

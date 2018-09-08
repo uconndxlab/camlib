@@ -4,21 +4,34 @@ window.onload = function() {
   var context = canvas.getContext('2d');
   var findStatus = document.getElementById("indicator");
   var tracker = new tracking.ObjectTracker('face');
+  var foundFace = false;
   tracker.setInitialScale(4);
   tracker.setStepSize(2);
   tracker.setEdgesDensity(0.1);
 
   tracking.track('#webcamFeed', tracker, { camera: true });
 
+  var x = setInterval(function(){
+     if(foundFace && findStatus.children.length == 0){
+       var faceFind = document.createElement("p");
+       faceFind.setAttribute("id", "statusIndicator");
+       var text = document.createTextNode("*** FACE FOUND ***");
+       faceFind.appendChild(text);
+       document.getElementById("indicator").appendChild(faceFind);
+     } else {
+       var childP = document.getElementById("statusIndicator");
+       findStatus.removeChild(childP);
+     }
+  }, 100);
+
   tracker.on('track', function(event) {
     context.clearRect(0, 0, canvas.width, canvas.height);
+    foundFace = false;
 
     event.data.forEach(function(rect) {
-      var faceFind = document.createElement("p");
-      var text = document.createTextNode("*** FACE FOUND ***");
-      faceFind.appendChild(text);
-      document.getElementById("indicator").appendChild(faceFind);
+      foundFace = true;
       context.strokeStyle = '#1cff00';
+      context.lineWidth = "3";
       context.strokeRect(rect.x, rect.y, rect.width, rect.height);
       context.font = '11px Helvetica';
       context.fillStyle = "#fff";

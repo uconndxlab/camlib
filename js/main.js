@@ -11,6 +11,8 @@ window.onload = function() {
 
   tracking.track('#webcamFeed', tracker, { camera: true });
 
+  /*The below interval checks every millisecond to see if a face has been found, refound, or lost*/
+
   var x = setInterval(function(){
      if(foundFace && findStatus.children.length == 0){
        var faceFind = document.createElement("p");
@@ -28,7 +30,7 @@ window.onload = function() {
        var text = document.createTextNode("--> FACE FOUND <--");
        faceFind.appendChild(text);
        document.getElementById("indicator").appendChild(faceFind);
-     } else {
+     } else{
        var childP = document.getElementById("statusIndicator");
        findStatus.removeChild(childP);
        var faceFind = document.createElement("p");
@@ -40,11 +42,15 @@ window.onload = function() {
      }
   }, 100);
 
+  /*The following code starts the tracker upon recognition and draws the green square*/
+
   tracker.on('track', function(event) {
     context.clearRect(0, 0, canvas.width, canvas.height);
+    /*foundFace is set to false here because this is the function actuation, so it is ready to track but has found nothing yet*/
     foundFace = false;
 
     event.data.forEach(function(rect) {
+      /*foundFace is true here because this function is where the green square is actually drawn*/
       foundFace = true;
       context.strokeStyle = '#1cff00';
       context.lineWidth = "3";

@@ -5,7 +5,7 @@ window.onload = function() {
   var findStatus = document.getElementById("indicator");
   var tracker = new tracking.ObjectTracker('face');
   var foundFace = false;
-  var counter;
+  var counter = 4;
   tracker.setInitialScale(4);
   tracker.setStepSize(1);
   tracker.setEdgesDensity(0.1);
@@ -17,6 +17,7 @@ window.onload = function() {
 
   var x = setInterval(function(){
      if(foundFace && findStatus.children.length == 0){
+       console.clear();
        var faceFind = document.createElement("p");
        faceFind.setAttribute("id", "statusIndicator");
        faceFind.setAttribute("style", "color: rgb(89, 255, 0); font-weight: 500;");
@@ -24,6 +25,7 @@ window.onload = function() {
        faceFind.appendChild(text);
        document.getElementById("indicator").appendChild(faceFind);
      } else if (foundFace && findStatus.children.length > 0){
+       console.clear();
        var childP = document.getElementById("statusIndicatorRed");
        findStatus.removeChild(childP);
        var faceFind = document.createElement("p");
@@ -32,17 +34,19 @@ window.onload = function() {
        var text = document.createTextNode("--> FACE FOUND <--");
        faceFind.appendChild(text);
        document.getElementById("indicator").appendChild(faceFind);
+       /* === Below is the code to start the counter and temporary fake picture indication === */
        var z = setInterval(function(){
-         counter += 1;
+         counter -= 1;
          console.log(counter);
          document.querySelector(".countdown").innerHTML = counter;
-         if(counter >= 3){
-           counter = 0;
+         if(counter == 0){
+           counter = 4;
            clearInterval(z);
            document.querySelector(".countdown").innerHTML = "Picture Taken! Please wait!";
          }
        }, 1000);
      } else {
+       console.clear();
        var childP = document.getElementById("statusIndicator");
        findStatus.removeChild(childP);
        var faceFind = document.createElement("p");
@@ -51,7 +55,7 @@ window.onload = function() {
        var text = document.createTextNode("--> FACE LOST <--");
        faceFind.appendChild(text);
        document.getElementById("indicator").appendChild(faceFind);
-       counter = 0;
+       counter = 4;
      }
   }, 100);
 

@@ -69,11 +69,8 @@ window.onload = function() {
     context.strokeRect(canvas.width/5, canvas.height/4, video.width*.5, video.height*.5);
   });
 
-  /*
   var gui = new dat.GUI();
   gui.add(tracker, 'edgesDensity', 0.1, 0.5).step(0.01);
   gui.add(tracker, 'initialScale', 1.0, 10.0).step(0.1);
-  gui.add(tracker, 'stepSize', 1, 5).step(0.1);  */
-
-
+  gui.add(tracker, 'stepSize', 1, 5).step(0.1);
 };

@@ -15,6 +15,8 @@ window.onload = function() {
 
   var x = setInterval(function(){
      if(foundFace && findStatus.children.length == 0){
+       var childP = document.getElementById("statusIndicatorRed");
+       findStatus.removeChild(childP);
        var faceFind = document.createElement("p");
        faceFind.setAttribute("id", "statusIndicator");
        faceFind.setAttribute("style", "color: rgb(89, 255, 0); font-weight: 500;");
@@ -67,8 +69,11 @@ window.onload = function() {
     context.strokeRect(canvas.width/5, canvas.height/4, video.width*.5, video.height*.5);
   });
 
+  /*
   var gui = new dat.GUI();
   gui.add(tracker, 'edgesDensity', 0.1, 0.5).step(0.01);
   gui.add(tracker, 'initialScale', 1.0, 10.0).step(0.1);
-  gui.add(tracker, 'stepSize', 1, 5).step(0.1);
+  gui.add(tracker, 'stepSize', 1, 5).step(0.1);  */
+
+
 };

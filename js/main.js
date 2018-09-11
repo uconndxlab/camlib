@@ -5,13 +5,15 @@ window.onload = function() {
   var findStatus = document.getElementById("indicator");
   var tracker = new tracking.ObjectTracker('face');
   var foundFace = false;
+  var counter;
   tracker.setInitialScale(4);
   tracker.setStepSize(1);
   tracker.setEdgesDensity(0.1);
 
   tracking.track('#webcamFeed', tracker, { camera: true });
 
-  /*The below interval checks every millisecond to see if a face has been found, refound, or lost*/
+  /*The below interval checks every millisecond to see if a face has been found, refound, or lost
+  and reports it back to a variable which dynamically creates and erases a visual indication*/
 
   var x = setInterval(function(){
      if(foundFace && findStatus.children.length == 0){
@@ -30,7 +32,17 @@ window.onload = function() {
        var text = document.createTextNode("--> FACE FOUND <--");
        faceFind.appendChild(text);
        document.getElementById("indicator").appendChild(faceFind);
-     } else{
+       var z = setInterval(function(){
+         counter += 1;
+         console.log(counter);
+         document.querySelector(".countdown").innerHTML = counter;
+         if(counter >= 3){
+           counter = 0;
+           clearInterval(z);
+           document.querySelector(".countdown").innerHTML = "Picture Taken! Please wait!";
+         }
+       }, 1000);
+     } else {
        var childP = document.getElementById("statusIndicator");
        findStatus.removeChild(childP);
        var faceFind = document.createElement("p");
@@ -39,6 +51,7 @@ window.onload = function() {
        var text = document.createTextNode("--> FACE LOST <--");
        faceFind.appendChild(text);
        document.getElementById("indicator").appendChild(faceFind);
+       counter = 0;
      }
   }, 100);
 

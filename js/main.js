@@ -42,6 +42,7 @@ window.onload = function() {
          if(counter == 0){
            counter = 4;
            clearInterval(z);
+           document.querySelector(".countdown").style = "font-weight: 600; font-family: Helvetica; color: rgb(89, 255, 0);";
            document.querySelector(".countdown").innerHTML = "Picture Taken! Please wait!";
          }
        }, 1000);

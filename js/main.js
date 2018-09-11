@@ -38,6 +38,7 @@ window.onload = function() {
        var z = setInterval(function(){
          counter -= 1;
          console.log(counter);
+         document.querySelector(".countdown").style = "font-weight: 600; font-family: Helvetica; color: rgb(195, 10, 60);";
          document.querySelector(".countdown").innerHTML = counter;
          if(counter == 0){
            counter = 4;

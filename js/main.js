@@ -31,6 +31,7 @@ window.onload = function() {
     }
     if(!foundFace) {
           counter = 4;
+          document.querySelector(".countdown").style = "color: rgb(198, 117, 126); font-weight: 700; font-family: Helvetica;";
           document.querySelector(".countdown").innerHTML = "Please Align a Face!";
     }
   }, 1000);

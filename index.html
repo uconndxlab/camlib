@@ -4,26 +4,132 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.0/normalize.css">
   <title>Webcam Application</title>
+
+  <style>
+    .demo-container {
+      width: 70vw;
+      height: 100vh;
+      position: fixed;
+      top:0;
+      left:30vw;
+      overflow:hidden;
+    }
+
+    .demo-container>* {
+      width: 140vmin;
+      height: 100vmin;
+      position:absolute;
+      z-index:1;
+      left:50%;
+      top: 50%;
+      /*Mirror*/
+      transform:translate(-50%, -50%) scaleX(-1);
+    }
+
+    #canvas {
+      z-index:2;
+    }
+
+    aside {
+      position: fixed;
+      left: 0;
+      top:0;
+      width: 30vw;
+      height:100vh;
+      padding: 2rem;
+    }
+
+    .logo {
+      width: 8rem;
+      height: 8rem;
+    }
+
+    .countdown {
+      color: black;
+      font-size: 100px;
+    }
+
+    .region {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform:translate(-50%, -50%);
+      width: 55vmin;
+      height: 55vmin;
+      z-index: 10;
+      display:flex;
+      justify-content: space-between;
+      align-content: space-between;
+    }
+
+    .region div {
+      position:absolute;
+      z-index:1;
+      width: 10rem;
+      height: 10rem;
+      border-color: red;
+    }
+
+    .tl {
+      top:0;
+      left:0;
+      border-top: 10px solid;
+      border-left: 10px solid;
+    }
+
+    .tr {
+      top: 0;
+      right:0;
+      border-top: 10px solid;
+      border-right: 10px solid;
+    }
+
+    .bl {
+      bottom:0;
+      left: 0;
+      border-bottom: 10px solid;
+      border-left: 10px solid;
+    }
+
+    .br {
+      bottom:0;
+      right:0;
+      border-bottom: 10px solid;
+      border-right: 10px solid;
+    }
+
+
+  </style>
 </head>
 
 <body>
 
+  <aside>
+    <img src="assets/dx-square-logo.svg" alt="DXL" class=logo>
+  </aside>
+
   <div class="demo-frame">
     <div class="demo-container">
-      <video id="webcamFeed" width="320" height="240" preload autoplay loop muted></video>
-      <canvas id="canvas" width="320" height="240" style="position: absolute; left: 0px; top: 0px;"></canvas>
+      <video id="webcamFeed" preload autoplay loop muted></video>
+      <canvas id="canvas"></canvas>
+      <div class="region">
+        <div class="tl"></div>
+        <div class="tr"></div>
+        <div class="bl"></div>
+        <div class="br"></div>
+      </div>
     </div>
   </div>
-  <p style="color: rgb(226, 51, 113); font-weight: 700;">*** PLEASE FIT YOUR FACE WITHIN THE PINK FRAME ***</p>
+  <p style="color: rgb(226, 51, 113); font-weight: 700;"></p>
   <div id="indicator"></div>
   <span class="countdown"></span>
 
-  <script src="js/main.js"></script>
   <script src="js/tracking.js-master/build/tracking-min.js"></script>
   <script src="js/tracking.js-master/build/data/face-min.js"></script>
   <!--    <script src="js/tracking.js-master/node_modules/dat.gui/build/dat.gui.min.js"></script>   -->
-  <script src="js/tracking.js-master/examples/assets/stats.min.js"></script>
+  <script src="js/main.js"></script>
 
 </body>
 

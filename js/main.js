@@ -5,58 +5,45 @@ window.onload = function() {
   var findStatus = document.getElementById("indicator");
   var tracker = new tracking.ObjectTracker('face');
   var foundFace = false;
+  var pictureTaken = false;
   var counter = 4;
   tracker.setInitialScale(4);
-  tracker.setStepSize(1);
+  tracker.setStepSize(2);
   tracker.setEdgesDensity(0.1);
 
   tracking.track('#webcamFeed', tracker, { camera: true });
 
+  canvas.width = Math.min(window.innerWidth, window.innerHeight) * 1.4;
+  canvas.height = Math.min(window.innerWidth, window.innerHeight);
+
   /*The below interval checks every millisecond to see if a face has been found, refound, or lost
   and reports it back to a variable which dynamically creates and erases a visual indication*/
-
   var x = setInterval(function(){
-     if(foundFace && findStatus.children.length == 0){
-       console.clear();
-       var faceFind = document.createElement("p");
-       faceFind.setAttribute("id", "statusIndicator");
-       faceFind.setAttribute("style", "color: rgb(89, 255, 0); font-weight: 500;");
-       var text = document.createTextNode("--> FACE FOUND <--");
-       faceFind.appendChild(text);
-       document.getElementById("indicator").appendChild(faceFind);
-     } else if (foundFace && findStatus.children.length > 0){
-       console.clear();
-       var childP = document.getElementById("statusIndicatorRed");
-       findStatus.removeChild(childP);
-       var faceFind = document.createElement("p");
-       faceFind.setAttribute("id", "statusIndicator");
-       faceFind.setAttribute("style", "color: rgb(89, 255, 0); font-weight: 800; font-family: Helvetica; font-size: 20px;");
-       var text = document.createTextNode("--> FACE FOUND <--");
-       faceFind.appendChild(text);
-       document.getElementById("indicator").appendChild(faceFind);
-       /* === Below is the code to start the counter and temporary fake picture indication === */
-       var z = setInterval(function(){
-         counter -= 1;
-         console.log(counter);
-         document.querySelector(".countdown").innerHTML = counter;
-         if(counter == 0){
-           counter = 4;
-           clearInterval(z);
-           document.querySelector(".countdown").style = "font-weight: 600; font-family: Helvetica; color: rgb(89, 255, 0);";
-           document.querySelector(".countdown").innerHTML = "Picture Taken! Please wait!";
-         }
-       }, 1000);
+     if(foundFace){
+      var els = document.querySelectorAll('.region div');
+      for(var x = 0; x < els.length; x++) {
+        els[x].style.borderColor = 'green';
+      }
+      if(!pictureTaken) {
+         var z = setInterval(function(){
+           counter -= 1;
+           console.log(counter);
+           document.querySelector(".countdown").innerHTML = counter;
+           if(counter == 0){
+             counter = 4;
+             pictureTaken = true;
+             clearInterval(z);
+             document.querySelector(".countdown").innerHTML = "Picture Taken! Please wait!";
+           }
+         }, 1000);
+       }
      } else {
-       console.clear();
-       var childP = document.getElementById("statusIndicator");
-       findStatus.removeChild(childP);
-       var faceFind = document.createElement("p");
-       faceFind.setAttribute("id", "statusIndicatorRed");
-       faceFind.setAttribute("style", "color: rgb(212, 1, 127); font-weight: 800; font-family: Helvetica; font-size: 20px;");
-       var text = document.createTextNode("--> FACE LOST <--");
-       faceFind.appendChild(text);
-       document.getElementById("indicator").appendChild(faceFind);
+      var els = document.querySelectorAll('.region div');
+      for(var x = 0; x < els.length; x++) {
+        els[x].style.borderColor = 'red';
+      }
        counter = 4;
+       pictureTaken = false;
      }
   }, 100);
 

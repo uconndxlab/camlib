@@ -6,35 +6,63 @@ window.onload = function() {
   var tracker = new tracking.ObjectTracker('face');
   var foundFace;
   var hasFoundFace;
+  var canTurnOn;
   var counter = 4;
+  resetFaceFind();
   tracker.setInitialScale(4);
   tracker.setStepSize(1);
   tracker.setEdgesDensity(0.1);
 
   tracking.track('#webcamFeed', tracker, { camera: true });
 
-  /*The below interval checks every millisecond to see if a face has been found, refound, or lost
-  and reports it back to a variable which dynamically creates and erases a visual indication*/
-
-  /* === Below is the code to start the counter and temporary fake picture indication === */
-
-  var y = setInterval(function(){
-    if(foundFace){
-        counter -= 1;
-        document.querySelector(".countdown").style = "color: rgb(198, 117, 126); font-weight: 700; font-family: Helvetica;";
-        document.querySelector(".countdown").innerHTML = counter;
-        if(counter <= 0){
-          counter = 4;
-          document.querySelector(".countdown").style = "color: rgb(77, 162, 32); font-weight: 700; font-family: Helvetica;";
-          document.querySelector(".countdown").innerHTML = "Picture taken! Please wait...";
-      }
-    }
-    if(!foundFace) {
-          counter = 4;
+  function resetFaceFind(){
+    var y = setInterval(function(){
+      if(foundFace){
+          counter -= 1;
           document.querySelector(".countdown").style = "color: rgb(198, 117, 126); font-weight: 700; font-family: Helvetica;";
-          document.querySelector(".countdown").innerHTML = "Please Align a Face!";
-    }
-  }, 1000);
+          document.querySelector(".countdown").innerHTML = counter;
+          if(counter <= 0){
+            counter = 4;
+            clearInterval(y);
+            document.querySelector(".countdown").style = "color: rgb(77, 162, 32); font-weight: 700; font-family: Helvetica;";
+            document.querySelector(".countdown").innerHTML = "Picture taken! Please wait...";
+            for(var i = 0; i < 1; i++){
+              turnOnLight();
+            }
+        }
+      }
+      if(!foundFace) {
+            counter = 4;
+            document.querySelector(".countdown").style = "color: rgb(198, 117, 126); font-weight: 700; font-family: Helvetica;";
+            document.querySelector(".countdown").innerHTML = "Please Align a Face!";
+      }
+    }, 1000);
+  }
+
+
+  function turnOnLight(){
+    fetch('https://maker.ifttt.com/trigger/light_wink/with/key/bT9Xhj5iv07GgtQolk-H36')
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(myJson) {
+        console.log(JSON.stringify(myJson));
+      });
+  }
+
+  function turnOffLight(){
+    fetch('https://maker.ifttt.com/trigger/light_off/with/key/bT9Xhj5iv07GgtQolk-H36')
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(myJson) {
+      console.log(JSON.stringify(myJson));
+    });
+    resetFaceFind();
+  }
+
+    /*The below interval checks every millisecond to see if a face has been found, refound, or lost
+    and reports it back to a variable which dynamically creates and erases a visual indication*/
 
   var x = setInterval(function(){
      if(foundFace && findStatus.children.length == 0){
@@ -67,6 +95,10 @@ window.onload = function() {
        document.getElementById("indicator").appendChild(faceFind);
      }
   }, 100);
+
+  document.querySelector(".offBtn").addEventListener("click", function(){
+      turnOffLight();
+  });
 
   /*The following code starts the tracker upon recognition and draws the green square*/
 

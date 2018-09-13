@@ -10,7 +10,7 @@ window.onload = function() {
   var counter = 4;
   resetFaceFind();
   tracker.setInitialScale(4);
-  tracker.setStepSize(1);
+  tracker.setStepSize(2);
   tracker.setEdgesDensity(0.1);
 
   tracking.track('#webcamFeed', tracker, { camera: true });

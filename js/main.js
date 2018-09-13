@@ -4,7 +4,8 @@ window.onload = function() {
   var context = canvas.getContext('2d');
   var findStatus = document.getElementById("indicator");
   var tracker = new tracking.ObjectTracker('face');
-  var foundFace = false;
+  var foundFace;
+  var hasFoundFace;
   var counter = 4;
   tracker.setInitialScale(4);
   tracker.setStepSize(1);
@@ -14,6 +15,25 @@ window.onload = function() {
 
   /*The below interval checks every millisecond to see if a face has been found, refound, or lost
   and reports it back to a variable which dynamically creates and erases a visual indication*/
+
+  /* === Below is the code to start the counter and temporary fake picture indication === */
+
+  var y = setInterval(function(){
+    if(foundFace){
+        counter -= 1;
+        document.querySelector(".countdown").style = "color: rgb(198, 117, 126); font-weight: 700; font-family: Helvetica;";
+        document.querySelector(".countdown").innerHTML = counter;
+        if(counter <= 0){
+          counter = 4;
+          document.querySelector(".countdown").style = "color: rgb(77, 162, 32); font-weight: 700; font-family: Helvetica;";
+          document.querySelector(".countdown").innerHTML = "Picture taken! Please wait...";
+      }
+    }
+    if(!foundFace) {
+          counter = 4;
+          document.querySelector(".countdown").innerHTML = "Please Align a Face!";
+    }
+  }, 1000);
 
   var x = setInterval(function(){
      if(foundFace && findStatus.children.length == 0){
@@ -34,19 +54,6 @@ window.onload = function() {
        var text = document.createTextNode("--> FACE FOUND <--");
        faceFind.appendChild(text);
        document.getElementById("indicator").appendChild(faceFind);
-       /* === Below is the code to start the counter and temporary fake picture indication === */
-       var z = setInterval(function(){
-         counter -= 1;
-         console.log(counter);
-         document.querySelector(".countdown").style = "font-weight: 600; font-family: Helvetica; color: rgb(195, 10, 60);";
-         document.querySelector(".countdown").innerHTML = counter;
-         if(counter == 0){
-           counter = 4;
-           clearInterval(z);
-           document.querySelector(".countdown").style = "font-weight: 600; font-family: Helvetica; color: rgb(89, 255, 0);";
-           document.querySelector(".countdown").innerHTML = "Picture Taken! Please wait!";
-         }
-       }, 1000);
      } else {
        console.clear();
        var childP = document.getElementById("statusIndicator");
@@ -57,7 +64,6 @@ window.onload = function() {
        var text = document.createTextNode("--> FACE LOST <--");
        faceFind.appendChild(text);
        document.getElementById("indicator").appendChild(faceFind);
-       counter = 4;
      }
   }, 100);
 

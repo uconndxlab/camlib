@@ -42,7 +42,7 @@ class CamLib {
 
             context.strokeStyle = '#ffeb3b';
             context.fillStyle = '#ffeb3b';
-            context.font = '16px Mononoki';
+            context.font = '16px Arial';
             context.lineWidth = 5;
 
             let faceDetector = new window.FaceDetector({fastMode:true});
@@ -50,13 +50,11 @@ class CamLib {
                 .then(function(faces) {
                     context.clearRect(0, 0, canvas.width, canvas.height);
                     context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-                    faces.forEach(function(landmark) {
-                        const { top, left, width, height } = landmark.boundingBox;
+                    faces.forEach(function(face) {
+                        const { top, left, width, height } = face.boundingBox;
                         context.beginPath();
                         context.rect(left, top, width, height);
                         context.stroke();
-                        context.fillText('face detected', left + 5, top - 8);
- 
                     })
                 })
         }

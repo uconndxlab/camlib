@@ -3,18 +3,70 @@ class CamLib {
         this.video = document.querySelector(opts.videoSelector);
         this.errorElement = document.querySelector(opts.errorSelector);
         this.constraints = opts.constraints;
-        this.hiddenCanvas = opts.canvasSelector;
+        this.hiddenCanvas = document.querySelector(opts.canvasSelector);
+        this.context = this.hiddenCanvas.getContext('2d');
+        this.trackFaces = opts.trackFaces;
+        this.outlineFaces = opts.outlineFaces;
+        this.faces = [];
         this.hiddenImg;
         this.stream;
+
+        if(this.trackFaces) {
+            this.video.onloadedmetadata = () => {
+                this.hiddenCanvas.width = this.video.videoWidth;
+                this.hiddenCanvas.height = this.video.videoHeight;
+            };
+
+            let context = this.context;
+
+            
+            this.startTrackingFaces();
+        }
     }
 
-   async init(e) {
+    async init(e) {
         try {
             this.stream = await navigator.mediaDevices.getUserMedia(this.constraints);
             this.handleSuccess(this.stream);
         } catch (e) {
             this.handleError(e);
         }
+    }
+
+    async startTrackingFaces() {
+        if(this.trackFaces) {
+
+            let context = this.context;
+            let video = this.video;
+            let canvas = this.hiddenCanvas;
+
+            context.strokeStyle = '#ffeb3b';
+            context.fillStyle = '#ffeb3b';
+            context.font = '16px Mononoki';
+            context.lineWidth = 5;
+
+            let faceDetector = new window.FaceDetector({fastMode:true});
+            faceDetector.detect(this.video)
+                .then(function(faces) {
+                    context.clearRect(0, 0, canvas.width, canvas.height);
+                    context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+                    faces.forEach(function(landmark) {
+                        const { top, left, width, height } = landmark.boundingBox;
+                        context.beginPath();
+                        context.rect(left, top, width, height);
+                        context.stroke();
+                        context.fillText('face detected', left + 5, top - 8);
+ 
+                    })
+                })
+        }
+
+        requestAnimationFrame(() => this.startTrackingFaces())
+
+    }
+
+    stopTrackingFaces() {
+        this.trackFaces = false;
     }
 
     handleSuccess(stream) {
@@ -30,7 +82,7 @@ class CamLib {
         // Here we're using a trick that involves a hidden canvas element.  
 
         let hidden_canvas = this.hiddenCanvas;
-            context = hidden_canvas.getContext('2d');
+            context = this.context;
 
         let width = video.videoWidth,
             height = video.videoHeight;
@@ -54,12 +106,8 @@ class CamLib {
     }
 
     handleError(error) {
-        if (error.name === 'ConstraintNotSatisfiedError') {
-          let v = this.constraints.video;
-          this. errorMsg(`The resolution ${v.width.exact}x${v.height.exact} px is not supported by your device.`);
-        } else if (error.name === 'PermissionDeniedError') {
-          this.errorMsg('Permissions have not been granted to use your camera and ' +
-            'microphone, you need to allow the page access to your devices in ' +
+        if (error.name === 'PermissionDeniedError') {
+          this.errorMsg('You need to allow the page access to your devices in ' +
             'order for the demo to work.');
         }
         this.errorMsg(`getUserMedia error: ${error.name}`, error);
@@ -79,8 +127,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     let camLib = new CamLib({
         videoSelector:"#video",
-        errorSelector:"#errorElement",
+        errorSelector:"#notifications",
         canvasSelector:"#canvasElement",
+        trackFaces:true,
+        outlineFaces:true,
         constraints:{audio:false,video:true}        
     });
 

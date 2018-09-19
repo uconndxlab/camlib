@@ -8,15 +8,19 @@
             .hidden {
                 display:none;
             }
+
+            canvas {
+                display: block;
+            }
         </style>
     </head>
     <body>
-        <video autoplay id="video"></video>
-        <div id="errorElement"></div>
+        <video class="hidden" autoplay id="video"></video>
+        <div id="notifications"></div>
 
         <img class="hidden" id="img" src="#">
 
-        <canvas class="hidden" id="canvasElement"></canvas>
+        <canvas id="canvasElement"></canvas>
 
     </body>
 </html>

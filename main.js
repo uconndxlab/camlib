@@ -39,28 +39,53 @@ class CamLib {
             let context = this.context;
             let video = this.video;
             let canvas = this.hiddenCanvas;
+            let that = this;
 
-            context.strokeStyle = '#ffeb3b';
-            context.fillStyle = '#ffeb3b';
-            context.font = '16px Arial';
-            context.lineWidth = 5;
+
 
             let faceDetector = new window.FaceDetector({fastMode:true});
             faceDetector.detect(this.video)
                 .then(function(faces) {
-                    context.clearRect(0, 0, canvas.width, canvas.height);
-                    context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-                    faces.forEach(function(face) {
-                        const { top, left, width, height } = face.boundingBox;
-                        context.beginPath();
-                        context.rect(left, top, width, height);
-                        context.stroke();
-                    })
+                    if(that.outlineFaces) {
+                        context.clearRect(0, 0, canvas.width, canvas.height);
+                        context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+                    }
+
+                    if(faces.length) {
+                        that.dispatchFaceEvent("faceFound");
+                        faces.forEach(function(face) {
+
+                            if(that.outlineFaces) {
+                                that.drawFaceOutlines(context,face);
+                            }
+
+                            that.faces.push(face);
+                        });
+                    } else {
+                        that.dispatchFaceEvent("noFaceFound");
+                    }
                 })
         }
 
-        requestAnimationFrame(() => this.startTrackingFaces())
+        setTimeout((() => this.startTrackingFaces()), 2000);
 
+    }
+
+    dispatchFaceEvent(name) {
+      let event = new CustomEvent(name);
+      // Dispatch the event
+      window.dispatchEvent(event);
+    }
+
+    drawFaceOutlines(context, face) {
+        context.strokeStyle = '#ffeb3b';
+        context.fillStyle = '#ffeb3b';
+        context.font = '16px Arial';
+        context.lineWidth = 5;
+        const { top, left, width, height } = face.boundingBox;
+        context.beginPath();
+        context.rect(left, top, width, height);
+        context.stroke();
     }
 
     stopTrackingFaces() {
@@ -128,10 +153,20 @@ document.addEventListener("DOMContentLoaded", function(event) {
         errorSelector:"#notifications",
         canvasSelector:"#canvasElement",
         trackFaces:true,
-        outlineFaces:true,
+        outlineFaces:false,
         constraints:{audio:false,video:true}        
     });
 
     camLib.init();
+
+
+     window.addEventListener('faceFound', function(){
+        console.log("A FACE HAS BEEN FOUND");
+     });
+
+     window.addEventListener('noFaceFound', function(){
+        console.log("NO FACE FOUND");
+     });
+
 
 });
